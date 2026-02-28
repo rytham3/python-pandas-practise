@@ -1,0 +1,60 @@
+"""
+Platform: StrataScratch
+Problem: https://platform.stratascratch.com/coding/2146-department-manager-and-employee-salary-comparison?code_type=2
+Difficulty: Hard
+Concepts: rename, groupby, mean, round, astype, merge, sort_values
+"""
+
+import pandas as pd
+
+# creating the manager salary table 
+managers = (
+    employee_o[employee_o['employee_title'] == 'Manager']
+    [['id','salary']]
+    .rename(columns={
+        'id':'manager_id',
+        'salary':'manager_salary'
+    })
+)
+
+# Creating average employee salary per dept (excluding manager)
+avg_salary = (
+    employee_o[employee_o['employee_title'] != 'Manager']
+    .groupby('department',as_index=False)['salary']
+    .mean()
+)
+
+avg_salary['avg_emp_salary'] = avg_salary['salary'].round().astype(int)   
+avg_salary = avg_salary[['department','avg_emp_salary']]
+
+# Joining employee_o and manager tables
+df = employee_o.merge(
+    managers,
+    on='manager_id',
+    how='left'
+)
+
+# Joining df and avg_salary tables
+df = df.merge(
+    avg_salary,
+    on='department',
+    how='left'
+)
+
+# Result show: final shape + sorting
+result = (
+    df[['id',
+    'salary',
+    'department',
+    'manager_salary',
+    'avg_emp_salary'
+    ]]
+    .rename(columns={
+        'id':'emp_id',
+        'salary':'emp_salary'
+    })
+    .sort_values(
+        by=['department','emp_salary'],
+        ascending=[True,False]
+    )
+)
