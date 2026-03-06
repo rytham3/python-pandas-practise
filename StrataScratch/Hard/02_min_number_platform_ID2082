@@ -1,0 +1,26 @@
+import pandas as pd
+
+# Mark arrivals as +1
+arrivals = train_arrivals.copy()
+arrivals["time"] = arrivals["arrival_time"]
+arrivals["change"] = 1
+
+# Mark departures as -1
+departures = train_departures.copy()
+departures["time"] = departures["departure_time"]
+departures["change"] = -1
+
+# Combine both
+events = pd.concat([
+    arrivals[["time","change"]],
+    departures[["time","change"]]
+])
+
+# Sort by time (arrivals before departures if same time)
+events = events.sort_values(["time","change"], ascending=[True, False])
+
+# Running platforms
+events["platforms"] = events["change"].cumsum()
+
+# Result
+result = pd.Series(events["platforms"].max())
