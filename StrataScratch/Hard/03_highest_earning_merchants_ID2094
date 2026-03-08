@@ -1,0 +1,30 @@
+import pandas as pd
+
+# Extracting date
+order_details['date'] = order_details['order_timestamp'].dt.date
+
+# Daily earning per merchant
+daily = (order_details
+        .groupby(['date','merchant_id'])['total_amount_earned']
+        .sum()
+        .round(2)
+        .reset_index(name='total')
+)
+
+# Max merchant per day
+max_per_day = daily.groupby('date')['total'].transform('max')
+top_merchants = daily[daily['total'] == max_per_day]
+
+
+# Shift to next day
+top_merchants['date'] = pd.to_datetime(top_merchants['date']) + pd.Timedelta(days = 1)
+
+# Join merchants names
+result = top_merchants.merge(
+        merchant_details,
+        left_on = 'merchant_id',
+        right_on = 'id'
+)
+
+# Final Output
+result = result[['date','name']].sort_values('date')
