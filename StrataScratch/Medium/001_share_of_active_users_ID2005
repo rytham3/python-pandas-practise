@@ -1,0 +1,22 @@
+"""
+Pseudo Code:
+- Count total number of users
+- filter rows where country = 'USA' and status = 'open'
+- count filtered rows
+- percentage nikaalo
+- result show in DataFrame
+"""
+
+import pandas as pd
+
+df = fb_active_users
+
+total_users = df['user_id'].count()
+
+filtered_rows = df[(df['country'] == 'USA') & (df['status'] == 'open')]
+
+count_filtered_rows = filtered_rows['user_id'].count()
+
+user_perc = (count_filtered_rows / total_users) * 100
+
+result = pd.DataFrame({'percentage' : [user_perc]})
