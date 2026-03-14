@@ -1,0 +1,21 @@
+"""
+Date: 14-03-2026
+Link: https://platform.stratascratch.com/coding/2000-variable-vs-fixed-rates?code_type=2
+Pseudo Code:
+- pehle submissions ko df likho 
+- df['fixed'] naam ka column banayo, aur add one in every row jahan df['rate_type']=='fixed' else 0 
+- then df['variable'] naam ka column bnayo, aur add one in evey row Jahan df['rate_type']=='variable' else 0 
+- then dono column ko combine kardo and saath mein show the loan_id
+
+
+"""
+
+
+import pandas as pd
+
+df = submissions
+
+df['fixed'] = (df['rate_type']=='fixed').astype(int)
+df['variable'] = (df['rate_type']=='variable').astype(int)
+
+result = df[['loan_id','fixed','variable']]
